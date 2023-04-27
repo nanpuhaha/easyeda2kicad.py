@@ -33,9 +33,7 @@ class EasyedaApi:
 
     def get_cad_data_of_component(self, lcsc_id: str) -> dict:
         cp_cad_info = self.get_info_from_easyeda_api(lcsc_id=lcsc_id)
-        if cp_cad_info == {}:
-            return {}
-        return cp_cad_info["result"]
+        return {} if cp_cad_info == {} else cp_cad_info["result"]
 
     def get_raw_3d_model_obj(self, uuid: str) -> str:
         r = requests.get(

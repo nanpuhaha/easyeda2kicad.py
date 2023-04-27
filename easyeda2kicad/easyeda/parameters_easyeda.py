@@ -288,7 +288,7 @@ class EeSymbol:
 
 
 def convert_to_mm(dim: float) -> float:
-    return float(dim) * 10 * 0.0254
+    return dim * 10 * 0.0254
 
 
 @dataclass
