@@ -113,8 +113,8 @@ def compute_arc(
 
 
 def fp_to_ki(dim: float) -> float:
-    if dim not in ["", None] and isnan(float(dim)) is False:
-        return round(float(dim) * 10 * 0.0254, 2)
+    if dim not in ["", None] and isnan(dim) is False:
+        return round(dim * 10 * 0.0254, 2)
     return dim
 
 
@@ -124,23 +124,18 @@ def fp_to_ki(dim: float) -> float:
 def drill_to_ki(
     hole_radius: float, hole_length: float, pad_height: float, pad_width: float
 ) -> str:
-    if (
-        hole_radius > 0
-        and hole_length != ""
-        and hole_length is not None
-        and hole_length != 0
-    ):
-
-        max_distance_hole = max(hole_radius * 2, hole_length)
-        pos_0 = pad_height - max_distance_hole
-        pos_90 = pad_width - max_distance_hole
-        max_distance = max(pos_0, pos_90)
-
-        if max_distance == pos_0:
-            return f"(drill oval {hole_radius*2} {hole_length})"
-        else:
-            return f"(drill oval {hole_length} {hole_radius*2})"
     if hole_radius > 0:
+        if hole_length != "" and hole_length is not None and hole_length != 0:
+            max_distance_hole = max(hole_radius * 2, hole_length)
+            pos_0 = pad_height - max_distance_hole
+            pos_90 = pad_width - max_distance_hole
+            max_distance = max(pos_0, pos_90)
+
+            return (
+                f"(drill oval {hole_radius * 2} {hole_length})"
+                if max_distance == pos_0
+                else f"(drill oval {hole_length} {hole_radius * 2})"
+            )
         return f"(drill {2 * hole_radius})"
     return ""
 
@@ -264,10 +259,7 @@ class ExporterFootprintKicad:
 
                     # Generate polygon
                     path = "".join(
-                        "(xy {} {})".format(
-                            round(point_list[i] - self.input.bbox.x, 2),
-                            round(point_list[i + 1] - self.input.bbox.y, 2),
-                        )
+                        f"(xy {round(point_list[i] - self.input.bbox.x, 2)} {round(point_list[i + 1] - self.input.bbox.y, 2)})"
                         for i in range(0, len(point_list), 2)
                     )
                     ki_pad.polygon = (
